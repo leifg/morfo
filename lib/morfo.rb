@@ -22,7 +22,7 @@ module Morfo
     private
     def self.extract_value value, from
       Array(from).inject(value) do |resulting_value, key|
-        resulting_value[key]
+        resulting_value ? resulting_value[key] : nil
       end
     end
 
