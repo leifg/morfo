@@ -4,6 +4,10 @@ This Gem is inspired by the [active_importer](https://github.com/continuum/activ
 
 But instead of importing spreadsheets into models, you can morf (typo intended) arrays of Hashes into other arrays of hashes.
 
+## Compatibility
+
+This gem is currently only tested on Ruby 2.0 (including 2.0 mode of JRuby and RBX).
+
 ## Installation
 
 Add this line to your application's Gemfile:
