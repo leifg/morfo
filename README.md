@@ -1,5 +1,7 @@
 # Morfo
 
+[![Build Status](https://travis-ci.org/leifg/morfo.png?branch=master)](https://travis-ci.org/leifg/morfo) [![Coverage Status](https://coveralls.io/repos/leifg/morfo/badge.png?branch=master)](https://coveralls.io/r/leifg/morfo) [![Code Climate](https://codeclimate.com/github/leifg/morfo.png)](https://codeclimate.com/github/leifg/morfo) [![Dependency Status](https://gemnasium.com/leifg/morfo.png)](https://gemnasium.com/leifg/morfo) [![Gem Version](https://badge.fury.io/rb/morfo.png)](http://badge.fury.io/rb/morfo)
+
 This Gem is inspired by the [active_importer](https://github.com/continuum/active_importer) Gem.
 
 But instead of importing spreadsheets into models, you can morf (typo intended) arrays of Hashes into other arrays of hashes.
