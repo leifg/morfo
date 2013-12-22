@@ -46,6 +46,23 @@ Afterwards use the `morf` method to morf all hashes in one array to the end resu
     #   {tv_show_title: 'Breaking Bad'},
     # ]
 
+It is also possible to map fields to multiple other fields
+
+    class MultiTitle < Morfo::Base
+      map :title, :tv_show_title
+      map :title, :show_title
+    end
+
+    MultiTitle.morf([
+              {title: 'The Walking Dead'} ,
+              {title: 'Breaking Bad'},
+            ])
+
+    # [
+    #   {tv_show_title: 'The Walking Dead', show_title: 'The Walking Dead'},
+    #   {tv_show_title: 'Breaking Bad', show_title: 'Breaking Bad'},
+    # ]
+
 ## Transformations
 
 For each mapping you can define a block, that will be called on every input:
