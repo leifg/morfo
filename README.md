@@ -30,7 +30,7 @@ In order to morf the hashes you have to provide a class that extends `Morf::Base
 
 Use the `map` method to specify what field you map to another field:
 
-    class TitleMorfer < Morfo::Base
+    class Title < Morfo::Base
       map :title, :tv_show_title
     end
 
