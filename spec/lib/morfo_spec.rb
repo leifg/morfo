@@ -67,6 +67,21 @@ describe Morfo::Base do
       end
     end
 
+    context '1 to many conversion' do
+      subject do
+        class MutliTitleMapper < Morfo::Base
+          map :title, :title
+          map :title, :also_title
+        end
+        MutliTitleMapper
+      end
+
+      it 'maps title to multiple fields' do
+        expected_output = input.map{|v| {title: v[:title], also_title: v[:title]} }
+        expect(subject.morf(input)).to eq(expected_output)
+      end
+    end
+
     context 'nested conversion' do
       subject(:valid_path) do
         class ImdbRatingMapper < Morfo::Base
