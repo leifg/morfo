@@ -67,7 +67,6 @@ module Morfo
           { key => hash }
         end
       end
-      #{ to => value }
     end
   end
 end
