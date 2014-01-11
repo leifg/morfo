@@ -83,28 +83,30 @@ describe Morfo::Base do
     end
 
     context 'nested conversion' do
-      subject(:valid_path) do
-        class ImdbRatingMapper < Morfo::Base
-          map [:ratings, :imdb], :rating
+      context 'nested source' do
+        subject(:valid_path) do
+          class ImdbRatingMapper < Morfo::Base
+            map [:ratings, :imdb], :rating
+          end
+          ImdbRatingMapper
         end
-        ImdbRatingMapper
-      end
 
-      subject(:invalid_path) do
-        class InvalidImdbRatingMapper < Morfo::Base
-          map [:very, :long, :path, :that, :might, :not, :exist], :rating
+        subject(:invalid_path) do
+          class InvalidImdbRatingMapper < Morfo::Base
+            map [:very, :long, :path, :that, :might, :not, :exist], :rating
+          end
+          InvalidImdbRatingMapper
         end
-        InvalidImdbRatingMapper
-      end
 
-      it 'maps nested attributes' do
-        expected_output = input.map{|v| {rating: v[:ratings][:imdb]} }
-        expect(valid_path.morf(input)).to eq(expected_output)
-      end
+        it 'maps nested attributes' do
+          expected_output = input.map{|v| {rating: v[:ratings][:imdb]} }
+          expect(valid_path.morf(input)).to eq(expected_output)
+        end
 
-      it 'doesn\'t raise error for invalid path' do
-        expected_output = [{},{}]
-        expect(invalid_path.morf(input)).to eq(expected_output)
+        it 'doesn\'t raise error for invalid path' do
+          expected_output = [{},{}]
+          expect(invalid_path.morf(input)).to eq(expected_output)
+        end
       end
     end
   end
