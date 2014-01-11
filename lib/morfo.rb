@@ -9,7 +9,7 @@ module Morfo
     def self.morf input
       input.map do |row|
         mapping_actions.inject({}) do |output, action|
-          output.merge!(action.execute(row))
+          deep_merge!(output, action.execute(row))
         end
       end
     end
@@ -17,6 +17,18 @@ module Morfo
     private
     def self.mapping_actions
       @actions ||= []
+    end
+
+    def self.deep_merge! hash, other_hash, &block
+      other_hash.each_pair do |k,v|
+        tv = hash[k]
+        if tv.is_a?(Hash) && v.is_a?(Hash)
+          hash[k] = deep_merge!(tv, v, &block)
+        else
+          hash[k] = block && tv ? block.call(k, tv, v) : v
+        end
+      end
+      hash
     end
   end
 
@@ -33,7 +45,7 @@ module Morfo
 
     def execute row
       resulting_value = apply_transformation(extract_value(row))
-      resulting_value ? { to => resulting_value } : {}
+      resulting_value ? store_value(to, resulting_value) : {}
     end
 
     private
@@ -45,6 +57,17 @@ module Morfo
 
     def apply_transformation row
       transformation ? transformation.call(row) : row
+    end
+
+    def store_value to, value
+      Array(to).reverse.inject({}) do |hash, key|
+        if hash.keys.first.nil?
+          hash.merge!(key => value)
+        else
+          { key => hash }
+        end
+      end
+      #{ to => value }
     end
   end
 end

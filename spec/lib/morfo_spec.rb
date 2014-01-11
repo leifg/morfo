@@ -108,6 +108,28 @@ describe Morfo::Base do
           expect(invalid_path.morf(input)).to eq(expected_output)
         end
       end
+
+      context 'nested destination' do
+        subject do
+          class WrapperMapper < Morfo::Base
+            map :title, [:tv_show, :title]
+            map :channel, [:tv_show, :channel]
+          end
+          WrapperMapper
+        end
+
+        it 'maps to nested destination' do
+          expected_output = input.map{|v|
+            {
+              tv_show: {
+                title: v[:title],
+                channel: v[:channel],
+              }
+            }
+          }
+          expect(subject.morf(input)).to eq(expected_output)
+        end
+      end
     end
   end
 end
