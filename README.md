@@ -88,7 +88,7 @@ For each mapping you can define a block, that will be called on every input:
 You can directly access nested values in the hashes:
 
     class Name < Morfo::Base
-      map [:name, :firs], :first_name
+      map [:name, :first], :first_name
       map [:name, :last], :last_name
     end
 
@@ -109,7 +109,7 @@ You can directly access nested values in the hashes:
 
     # [
     #     {first_name: 'Clark',last_name: 'Kent'},
-    #     {first_name: 'Bruce',last_name: 'Wayne'},,
+    #     {first_name: 'Bruce',last_name: 'Wayne'},
     # ]
 
 ## Contributing
