@@ -67,29 +67,68 @@ describe Morfo::Base do
       end
     end
 
+    context '1 to many conversion' do
+      subject do
+        class MutliTitleMapper < Morfo::Base
+          map :title, :title
+          map :title, :also_title
+        end
+        MutliTitleMapper
+      end
+
+      it 'maps title to multiple fields' do
+        expected_output = input.map{|v| {title: v[:title], also_title: v[:title]} }
+        expect(subject.morf(input)).to eq(expected_output)
+      end
+    end
+
     context 'nested conversion' do
-      subject(:valid_path) do
-        class ImdbRatingMapper < Morfo::Base
-          map [:ratings, :imdb], :rating
+      context 'nested source' do
+        subject(:valid_path) do
+          class ImdbRatingMapper < Morfo::Base
+            map [:ratings, :imdb], :rating
+          end
+          ImdbRatingMapper
         end
-        ImdbRatingMapper
-      end
 
-      subject(:invalid_path) do
-        class InvalidImdbRatingMapper < Morfo::Base
-          map [:very, :long, :path, :that, :might, :not, :exist], :rating
+        subject(:invalid_path) do
+          class InvalidImdbRatingMapper < Morfo::Base
+            map [:very, :long, :path, :that, :might, :not, :exist], :rating
+          end
+          InvalidImdbRatingMapper
         end
-        InvalidImdbRatingMapper
+
+        it 'maps nested attributes' do
+          expected_output = input.map{|v| {rating: v[:ratings][:imdb]} }
+          expect(valid_path.morf(input)).to eq(expected_output)
+        end
+
+        it 'doesn\'t raise error for invalid path' do
+          expected_output = [{},{}]
+          expect(invalid_path.morf(input)).to eq(expected_output)
+        end
       end
 
-      it 'maps nested attributes' do
-        expected_output = input.map{|v| {rating: v[:ratings][:imdb]} }
-        expect(valid_path.morf(input)).to eq(expected_output)
-      end
+      context 'nested destination' do
+        subject do
+          class WrapperMapper < Morfo::Base
+            map :title, [:tv_show, :title]
+            map :channel, [:tv_show, :channel]
+          end
+          WrapperMapper
+        end
 
-      it 'doesn\'t raise error for invalid path' do
-        expected_output = [{},{}]
-        expect(invalid_path.morf(input)).to eq(expected_output)
+        it 'maps to nested destination' do
+          expected_output = input.map{|v|
+            {
+              tv_show: {
+                title: v[:title],
+                channel: v[:channel],
+              }
+            }
+          }
+          expect(subject.morf(input)).to eq(expected_output)
+        end
       end
     end
   end

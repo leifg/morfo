@@ -30,7 +30,7 @@ In order to morf the hashes you have to provide a class that extends `Morf::Base
 
 Use the `map` method to specify what field you map to another field:
 
-    class TitleMorfer < Morfo::Base
+    class Title < Morfo::Base
       map :title, :tv_show_title
     end
 
@@ -44,6 +44,23 @@ Afterwards use the `morf` method to morf all hashes in one array to the end resu
     # [
     #   {tv_show_title: 'The Walking Dead'},
     #   {tv_show_title: 'Breaking Bad'},
+    # ]
+
+It is also possible to map fields to multiple other fields
+
+    class MultiTitle < Morfo::Base
+      map :title, :tv_show_title
+      map :title, :show_title
+    end
+
+    MultiTitle.morf([
+              {title: 'The Walking Dead'} ,
+              {title: 'Breaking Bad'},
+            ])
+
+    # [
+    #   {tv_show_title: 'The Walking Dead', show_title: 'The Walking Dead'},
+    #   {tv_show_title: 'Breaking Bad', show_title: 'Breaking Bad'},
     # ]
 
 ## Transformations
@@ -71,7 +88,7 @@ For each mapping you can define a block, that will be called on every input:
 You can directly access nested values in the hashes:
 
     class Name < Morfo::Base
-      map [:name, :firs], :first_name
+      map [:name, :first], :first_name
       map [:name, :last], :last_name
     end
 
@@ -92,8 +109,27 @@ You can directly access nested values in the hashes:
 
     # [
     #     {first_name: 'Clark',last_name: 'Kent'},
-    #     {first_name: 'Bruce',last_name: 'Wayne'},,
+    #     {first_name: 'Bruce',last_name: 'Wayne'},
     # ]
+
+
+It is also possible to store values in a nested hash:
+
+    class Wrapper < Morfo::Base
+      map :first_name, [:superhero, :name, :first]
+      map :last_name, [:superhero, :name, :last]
+    end
+
+    Name.morf([
+      {first_name: 'Clark',last_name: 'Kent'},
+      {first_name: 'Bruce',last_name: 'Wayne'},,
+    ])
+
+    # [
+    #   { superhero: {name: { first: 'Clark', last: 'Kent'}}},
+    #   { superhero: {name: { first: 'Bruce', last: 'Wayne'}}},
+    # ]
+
 
 ## Contributing
 
