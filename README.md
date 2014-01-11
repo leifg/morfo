@@ -112,6 +112,25 @@ You can directly access nested values in the hashes:
     #     {first_name: 'Bruce',last_name: 'Wayne'},
     # ]
 
+
+It is also possible to store values in a nested hash:
+
+    class Wrapper < Morfo::Base
+      map :first_name, [:superhero, :name, :first]
+      map :last_name, [:superhero, :name, :last]
+    end
+
+    Name.morf([
+      {first_name: 'Clark',last_name: 'Kent'},
+      {first_name: 'Bruce',last_name: 'Wayne'},,
+    ])
+
+    # [
+    #   { superhero: {name: { first: 'Clark', last: 'Kent'}}},
+    #   { superhero: {name: { first: 'Bruce', last: 'Wayne'}}},
+    # ]
+
+
 ## Contributing
 
 1. Fork it
