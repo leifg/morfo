@@ -2,8 +2,8 @@ require 'morfo/version'
 
 module Morfo
   class Base
-    def self.map from, to, &transformation
-      mapping_actions << MapAction.new(from, to, transformation)
+    def self.field field_name, definition
+      mapping_actions << MapAction.new(definition[:from], field_name, definition[:transformation])
     end
 
     def self.morf input
