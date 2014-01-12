@@ -141,5 +141,23 @@ describe Morfo::Base do
         end
       end
     end
+
+    context 'calculations' do
+      subject do
+        class TitlePrefixMapper < Morfo::Base
+          field :title_with_channel, calculation: proc{|v| "#{v[:title]}, (#{v[:channel]})"}
+        end
+        TitlePrefixMapper
+      end
+
+      it 'maps calculation correctly' do
+        expected_output = input.map{|v|
+          {
+            title_with_channel: "#{v[:title]}, (#{v[:channel]})"
+          }
+        }
+        expect(subject.morf(input)).to eq(expected_output)
+      end
+    end
   end
 end

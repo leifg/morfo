@@ -3,11 +3,15 @@ require 'morfo/version'
 module Morfo
   class Base
     def self.field field_name, definition
-      raise(
-        ArgumentError,
-        "No field to map from is specified for #{field_name.inspect}"
-      ) unless definition[:from]
-      mapping_actions << MapAction.new(definition[:from], field_name, definition[:transformation])
+      if definition[:calculation]
+        mapping_actions << TransformationAction.new(field_name, definition[:calculation])
+      else
+        raise(
+          ArgumentError,
+          "No field to map from is specified for #{field_name.inspect}"
+        ) unless definition[:from]
+        mapping_actions << MapAction.new(definition[:from], field_name, definition[:transformation])
+      end
     end
 
     def self.morf input
@@ -33,6 +37,20 @@ module Morfo
         end
       end
       hash
+    end
+  end
+
+  class TransformationAction
+    attr_reader :to
+    attr_reader :calculation
+
+    def initialize to, calculation
+      @to = to
+      @calculation = calculation
+    end
+
+    def execute row
+      {to => calculation.call(row)}
     end
   end
 
