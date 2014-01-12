@@ -31,6 +31,18 @@ describe Morfo::Base do
   end
 
   describe '#morf' do
+    context 'errors' do
+      subject(:no_from) do
+        class NilMapper < Morfo::Base
+          field :my_field, {}
+        end
+        NilMapper
+      end
+      it 'raises error for nil field' do
+        expect{no_from.morf([])}.to raise_error(ArgumentError)
+      end
+    end
+
     context '1 to 1 conversion' do
       subject do
         class TitleMapper < Morfo::Base

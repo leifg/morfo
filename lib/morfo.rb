@@ -3,6 +3,10 @@ require 'morfo/version'
 module Morfo
   class Base
     def self.field field_name, definition
+      raise(
+        ArgumentError,
+        "No field to map from is specified for #{field_name.inspect}"
+      ) unless definition[:from]
       mapping_actions << MapAction.new(definition[:from], field_name, definition[:transformation])
     end
 
