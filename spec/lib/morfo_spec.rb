@@ -34,7 +34,7 @@ describe Morfo::Base do
     context '1 to 1 conversion' do
       subject do
         class TitleMapper < Morfo::Base
-          map :title, :tv_show_title
+          field :tv_show_title, from: :title
         end
         TitleMapper
       end
@@ -54,9 +54,7 @@ describe Morfo::Base do
     context '1 to 1 conversion with transformation' do
       subject do
         class NumCastMapper < Morfo::Base
-          map :cast, :cast_num do |cast|
-            cast.size
-          end
+          field :cast_num, from: :cast, transformation: proc { |v| v.size}
         end
         NumCastMapper
       end
@@ -70,8 +68,8 @@ describe Morfo::Base do
     context '1 to many conversion' do
       subject do
         class MutliTitleMapper < Morfo::Base
-          map :title, :title
-          map :title, :also_title
+          field :title, from: :title
+          field :also_title, from: :title
         end
         MutliTitleMapper
       end
@@ -86,14 +84,14 @@ describe Morfo::Base do
       context 'nested source' do
         subject(:valid_path) do
           class ImdbRatingMapper < Morfo::Base
-            map [:ratings, :imdb], :rating
+            field :rating, from: [:ratings, :imdb]
           end
           ImdbRatingMapper
         end
 
         subject(:invalid_path) do
           class InvalidImdbRatingMapper < Morfo::Base
-            map [:very, :long, :path, :that, :might, :not, :exist], :rating
+            field :rating, from: [:very, :long, :path, :that, :might, :not, :exist]
           end
           InvalidImdbRatingMapper
         end
@@ -112,8 +110,8 @@ describe Morfo::Base do
       context 'nested destination' do
         subject do
           class WrapperMapper < Morfo::Base
-            map :title, [:tv_show, :title]
-            map :channel, [:tv_show, :channel]
+            field([:tv_show, :title], from: :title)
+            field([:tv_show, :channel], from: :channel)
           end
           WrapperMapper
         end
