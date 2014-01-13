@@ -9,7 +9,7 @@ module Morfo
       else
         raise(
           ArgumentError,
-          "No field to map from is specified for #{field_name.inspect}"
+          "No field to get value from is specified for #{field_name.inspect}"
         ) unless definition[:from]
         mapping_actions << Morfo::Actions::MapAction.new(definition[:from], field_name)
       end
