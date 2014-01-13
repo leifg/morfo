@@ -1,16 +1,17 @@
 require 'morfo/version'
+require 'morfo/actions'
 
 module Morfo
   class Base
-    def self.field field_name, definition
-      if definition[:calculation]
-        mapping_actions << TransformationAction.new(field_name, definition[:calculation])
+    def self.field field_name, definition={}, &blk
+      if blk
+        mapping_actions << Morfo::Actions::TransformationAction.new(definition[:from], field_name, blk)
       else
         raise(
           ArgumentError,
           "No field to map from is specified for #{field_name.inspect}"
         ) unless definition[:from]
-        mapping_actions << MapAction.new(definition[:from], field_name, definition[:transformation])
+        mapping_actions << Morfo::Actions::MapAction.new(definition[:from], field_name)
       end
     end
 
@@ -37,58 +38,6 @@ module Morfo
         end
       end
       hash
-    end
-  end
-
-  class TransformationAction
-    attr_reader :to
-    attr_reader :calculation
-
-    def initialize to, calculation
-      @to = to
-      @calculation = calculation
-    end
-
-    def execute row
-      {to => calculation.call(row)}
-    end
-  end
-
-  class MapAction
-    attr_reader :from
-    attr_reader :to
-    attr_reader :transformation
-
-    def initialize from, to, transformation
-      @from = from
-      @to = to
-      @transformation = transformation
-    end
-
-    def execute row
-      resulting_value = apply_transformation(extract_value(row))
-      resulting_value ? store_value(to, resulting_value) : {}
-    end
-
-    private
-    def extract_value row
-      Array(from).inject(row) do |resulting_value, key|
-        resulting_value ? resulting_value[key] : nil
-      end
-    end
-
-    def apply_transformation row
-      transformation ? transformation.call(row) : row
-    end
-
-    def store_value to, value
-      Array(to).reverse.inject({}) do |hash, key|
-        if hash.keys.first.nil?
-          hash.merge!(key => value)
-        else
-          { key => hash }
-        end
-      end
     end
   end
 end
