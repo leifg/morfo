@@ -1,9 +1,18 @@
 require 'morfo/version'
+require 'morfo/actions'
 
 module Morfo
   class Base
-    def self.map from, to, &transformation
-      mapping_actions << MapAction.new(from, to, transformation)
+    def self.field field_name, definition={}, &blk
+      if blk
+        mapping_actions << Morfo::Actions::TransformationAction.new(definition[:from], field_name, blk)
+      else
+        raise(
+          ArgumentError,
+          "No field to map from is specified for #{field_name.inspect}"
+        ) unless definition[:from]
+        mapping_actions << Morfo::Actions::MapAction.new(definition[:from], field_name)
+      end
     end
 
     def self.morf input
@@ -29,44 +38,6 @@ module Morfo
         end
       end
       hash
-    end
-  end
-
-  class MapAction
-    attr_reader :from
-    attr_reader :to
-    attr_reader :transformation
-
-    def initialize from, to, transformation
-      @from = from
-      @to = to
-      @transformation = transformation
-    end
-
-    def execute row
-      resulting_value = apply_transformation(extract_value(row))
-      resulting_value ? store_value(to, resulting_value) : {}
-    end
-
-    private
-    def extract_value row
-      Array(from).inject(row) do |resulting_value, key|
-        resulting_value ? resulting_value[key] : nil
-      end
-    end
-
-    def apply_transformation row
-      transformation ? transformation.call(row) : row
-    end
-
-    def store_value to, value
-      Array(to).reverse.inject({}) do |hash, key|
-        if hash.keys.first.nil?
-          hash.merge!(key => value)
-        else
-          { key => hash }
-        end
-      end
     end
   end
 end

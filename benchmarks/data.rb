@@ -46,20 +46,20 @@ module BenchmarkData
 
   class SimpleMappingSymbol < Morfo::Base
     BenchmarkData.row.keys.each do |field|
-      map field, :"#{field}_mapped"
+      field(:"#{field}_mapped", from: field)
     end
   end
 
   class SimpleMappingString < Morfo::Base
     BenchmarkData.row_string_keys.keys.each do |field|
-      map field, "#{field}_mapped"
+      field("#{field}_mapped", from: field)
     end
   end
 
   class NestedMappingSymbol < Morfo::Base
     BenchmarkData.row_nested.each do |key, value|
       value.keys.each do |field|
-        map [key, field], :"#{field}_mapped"
+        field(:"#{field}_mapped", from: [key, field])
       end
     end
   end
@@ -67,7 +67,7 @@ module BenchmarkData
   class NestedMappingString < Morfo::Base
     BenchmarkData.row_nested_string_keys.each do |key, value|
       value.keys.each do |field|
-        map [key, field], "#{field}_mapped"
+        field("#{field}_mapped", from: [key, field])
       end
     end
   end

@@ -31,10 +31,22 @@ describe Morfo::Base do
   end
 
   describe '#morf' do
+    context 'errors' do
+      subject(:no_from) do
+        class NilMapper < Morfo::Base
+          field :my_field, {}
+        end
+        NilMapper
+      end
+      it 'raises error for nil field' do
+        expect{no_from.morf([])}.to raise_error(ArgumentError)
+      end
+    end
+
     context '1 to 1 conversion' do
       subject do
         class TitleMapper < Morfo::Base
-          map :title, :tv_show_title
+          field :tv_show_title, from: :title
         end
         TitleMapper
       end
@@ -54,9 +66,7 @@ describe Morfo::Base do
     context '1 to 1 conversion with transformation' do
       subject do
         class NumCastMapper < Morfo::Base
-          map :cast, :cast_num do |cast|
-            cast.size
-          end
+          field(:cast_num, from: :cast){|v,r| v.size}
         end
         NumCastMapper
       end
@@ -70,8 +80,8 @@ describe Morfo::Base do
     context '1 to many conversion' do
       subject do
         class MutliTitleMapper < Morfo::Base
-          map :title, :title
-          map :title, :also_title
+          field :title, from: :title
+          field :also_title, from: :title
         end
         MutliTitleMapper
       end
@@ -86,14 +96,21 @@ describe Morfo::Base do
       context 'nested source' do
         subject(:valid_path) do
           class ImdbRatingMapper < Morfo::Base
-            map [:ratings, :imdb], :rating
+            field :rating, from: [:ratings, :imdb]
+          end
+          ImdbRatingMapper
+        end
+
+        subject(:valid_path_with_transformation) do
+          class ImdbRatingMapper < Morfo::Base
+            field(:rating, from: [:ratings, :imdb]){|v| "Rating: #{v}"}
           end
           ImdbRatingMapper
         end
 
         subject(:invalid_path) do
           class InvalidImdbRatingMapper < Morfo::Base
-            map [:very, :long, :path, :that, :might, :not, :exist], :rating
+            field :rating, from: [:very, :long, :path, :that, :might, :not, :exist]
           end
           InvalidImdbRatingMapper
         end
@@ -101,6 +118,11 @@ describe Morfo::Base do
         it 'maps nested attributes' do
           expected_output = input.map{|v| {rating: v[:ratings][:imdb]} }
           expect(valid_path.morf(input)).to eq(expected_output)
+        end
+
+        it 'maps nested attributes with transformation' do
+          expected_output = input.map{|v| {rating: "Rating: #{v[:ratings][:imdb]}"} }
+          expect(valid_path_with_transformation.morf(input)).to eq(expected_output)
         end
 
         it 'doesn\'t raise error for invalid path' do
@@ -112,8 +134,8 @@ describe Morfo::Base do
       context 'nested destination' do
         subject do
           class WrapperMapper < Morfo::Base
-            map :title, [:tv_show, :title]
-            map :channel, [:tv_show, :channel]
+            field([:tv_show, :title], from: :title)
+            field([:tv_show, :channel], from: :channel){|v| "Channel: #{v}"}
           end
           WrapperMapper
         end
@@ -123,12 +145,44 @@ describe Morfo::Base do
             {
               tv_show: {
                 title: v[:title],
-                channel: v[:channel],
+                channel: "Channel: #{v[:channel]}",
               }
             }
           }
           expect(subject.morf(input)).to eq(expected_output)
         end
+      end
+    end
+
+    context 'calculations' do
+      subject do
+        class TitlePrefixMapper < Morfo::Base
+          field(:title_with_channel){|v,r| "#{r[:title]}, (#{r[:channel]})"}
+        end
+        TitlePrefixMapper
+      end
+
+      it 'maps calculation correctly' do
+        expected_output = input.map{|r|
+          {
+            title_with_channel: "#{r[:title]}, (#{r[:channel]})"
+          }
+        }
+        expect(subject.morf(input)).to eq(expected_output)
+      end
+    end
+
+    context 'static values' do
+      subject do
+        class StaticTitleMapper < Morfo::Base
+          field(:new_title){ 'Static Title' }
+        end
+        StaticTitleMapper
+      end
+
+      it 'maps static value correctly' do
+        expected_output = input.map{|r| {new_title: 'Static Title'} }
+        expect(subject.morf(input)).to eq(expected_output)
       end
     end
   end
