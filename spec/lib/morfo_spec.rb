@@ -66,7 +66,7 @@ describe Morfo::Base do
     context '1 to 1 conversion with transformation' do
       subject do
         class NumCastMapper < Morfo::Base
-          field :cast_num, from: :cast, transformation: proc { |v| v.size}
+          field(:cast_num, from: :cast){|v,r| v.size}
         end
         NumCastMapper
       end
@@ -101,6 +101,13 @@ describe Morfo::Base do
           ImdbRatingMapper
         end
 
+        subject(:valid_path_with_transformation) do
+          class ImdbRatingMapper < Morfo::Base
+            field(:rating, from: [:ratings, :imdb]){|v| "Rating: #{v}"}
+          end
+          ImdbRatingMapper
+        end
+
         subject(:invalid_path) do
           class InvalidImdbRatingMapper < Morfo::Base
             field :rating, from: [:very, :long, :path, :that, :might, :not, :exist]
@@ -113,6 +120,11 @@ describe Morfo::Base do
           expect(valid_path.morf(input)).to eq(expected_output)
         end
 
+        it 'maps nested attributes with transformation' do
+          expected_output = input.map{|v| {rating: "Rating: #{v[:ratings][:imdb]}"} }
+          expect(valid_path_with_transformation.morf(input)).to eq(expected_output)
+        end
+
         it 'doesn\'t raise error for invalid path' do
           expected_output = [{},{}]
           expect(invalid_path.morf(input)).to eq(expected_output)
@@ -123,7 +135,7 @@ describe Morfo::Base do
         subject do
           class WrapperMapper < Morfo::Base
             field([:tv_show, :title], from: :title)
-            field([:tv_show, :channel], from: :channel)
+            field([:tv_show, :channel], from: :channel){|v| "Channel: #{v}"}
           end
           WrapperMapper
         end
@@ -133,7 +145,7 @@ describe Morfo::Base do
             {
               tv_show: {
                 title: v[:title],
-                channel: v[:channel],
+                channel: "Channel: #{v[:channel]}",
               }
             }
           }
@@ -145,15 +157,15 @@ describe Morfo::Base do
     context 'calculations' do
       subject do
         class TitlePrefixMapper < Morfo::Base
-          field :title_with_channel, calculation: proc{|v| "#{v[:title]}, (#{v[:channel]})"}
+          field(:title_with_channel){|v,r| "#{r[:title]}, (#{r[:channel]})"}
         end
         TitlePrefixMapper
       end
 
       it 'maps calculation correctly' do
-        expected_output = input.map{|v|
+        expected_output = input.map{|r|
           {
-            title_with_channel: "#{v[:title]}, (#{v[:channel]})"
+            title_with_channel: "#{r[:title]}, (#{r[:channel]})"
           }
         }
         expect(subject.morf(input)).to eq(expected_output)
