@@ -9,22 +9,22 @@ definitions = [
   {
     label: 'Simple (strings)',
     row: BenchmarkData.row_string_keys,
-    morf_class: BenchmarkData::SimpleMappingString
+    morf_class: BenchmarkData::SimpleMorferString
   },
   {
     label: 'Simple (symbols)',
     row: BenchmarkData.row,
-    morf_class: BenchmarkData::SimpleMappingSymbol
+    morf_class: BenchmarkData::SimpleMorferSymbol
   },
   {
     label: 'Nested (strings)',
     row: BenchmarkData.row_nested_string_keys,
-    morf_class: BenchmarkData::NestedMappingString
+    morf_class: BenchmarkData::NestedMorferString
   },
   {
     label: 'Nested (symbols)',
     row: BenchmarkData.row_nested,
-    morf_class: BenchmarkData::NestedMappingSymbol
+    morf_class: BenchmarkData::NestedMorferSymbol
   },
 ]
 
