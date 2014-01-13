@@ -171,5 +171,19 @@ describe Morfo::Base do
         expect(subject.morf(input)).to eq(expected_output)
       end
     end
+
+    context 'static values' do
+      subject do
+        class StaticTitleMapper < Morfo::Base
+          field(:new_title){ 'Static Title' }
+        end
+        StaticTitleMapper
+      end
+
+      it 'maps static value correctly' do
+        expected_output = input.map{|r| {new_title: 'Static Title'} }
+        expect(subject.morf(input)).to eq(expected_output)
+      end
+    end
   end
 end
