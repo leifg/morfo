@@ -34,19 +34,19 @@ describe Morfo::Base do
     context 'errors' do
       subject(:no_from) do
         class NilMorfer < Morfo::Base
-          field :my_field, {}
+          field(:my_field)
         end
         NilMorfer
       end
       it 'raises error for nil field' do
-        expect{no_from.morf([])}.to raise_error(ArgumentError)
+        expect{no_from.morf([{my_field: :something}])}.to raise_error(ArgumentError)
       end
     end
 
     context '1 to 1 conversion' do
       subject do
         class TitleMorfer < Morfo::Base
-          field :tv_show_title, from: :title
+          field(:tv_show_title).from(:title)
         end
         TitleMorfer
       end
@@ -66,7 +66,7 @@ describe Morfo::Base do
     context '1 to 1 conversion with transformation' do
       subject do
         class NumCastMorfer < Morfo::Base
-          field(:cast_num, from: :cast){|v,r| v.size}
+          field(:cast_num).from(:cast).transformed{|v| v.size}
         end
         NumCastMorfer
       end
@@ -80,8 +80,8 @@ describe Morfo::Base do
     context '1 to many conversion' do
       subject do
         class MutliTitleMorfer < Morfo::Base
-          field :title, from: :title
-          field :also_title, from: :title
+          field(:title).from(:title)
+          field(:also_title).from(:title)
         end
         MutliTitleMorfer
       end
@@ -96,21 +96,21 @@ describe Morfo::Base do
       context 'nested source' do
         subject(:valid_path) do
           class ImdbRatingMorfer < Morfo::Base
-            field :rating, from: [:ratings, :imdb]
+            field(:rating).from(:ratings, :imdb)
           end
           ImdbRatingMorfer
         end
 
         subject(:valid_path_with_transformation) do
-          class ImdbRatingMorfer < Morfo::Base
-            field(:rating, from: [:ratings, :imdb]){|v| "Rating: #{v}"}
+          class ImdbRatingMorferWithTransformation < Morfo::Base
+            field(:rating).from(:ratings, :imdb).transformed {|v| "Rating: #{v}"}
           end
-          ImdbRatingMorfer
+          ImdbRatingMorferWithTransformation
         end
 
         subject(:invalid_path) do
           class InvalidImdbRatingMorfer < Morfo::Base
-            field :rating, from: [:very, :long, :path, :that, :might, :not, :exist]
+            field(:rating).from(:very, :long, :path, :that, :might, :not, :exist)
           end
           InvalidImdbRatingMorfer
         end
@@ -134,8 +134,8 @@ describe Morfo::Base do
       context 'nested destination' do
         subject do
           class WrapperMorfer < Morfo::Base
-            field([:tv_show, :title], from: :title)
-            field([:tv_show, :channel], from: :channel){|v| "Channel: #{v}"}
+            #field(:tv_show, :title).from(:title)
+            field(:tv_show, :channel).from(:channel).transformed {|v| "Channel: #{v}"}
           end
           WrapperMorfer
         end
@@ -144,7 +144,7 @@ describe Morfo::Base do
           expected_output = input.map{|v|
             {
               tv_show: {
-                title: v[:title],
+                #title: v[:title],
                 channel: "Channel: #{v[:channel]}",
               }
             }
@@ -157,7 +157,7 @@ describe Morfo::Base do
     context 'calculations' do
       subject do
         class TitlePrefixMorfer < Morfo::Base
-          field(:title_with_channel){|v,r| "#{r[:title]}, (#{r[:channel]})"}
+          field(:title_with_channel).calculated{|r| "#{r[:title]}, (#{r[:channel]})"}
         end
         TitlePrefixMorfer
       end
@@ -175,7 +175,7 @@ describe Morfo::Base do
     context 'static values' do
       subject do
         class StaticTitleMorfer < Morfo::Base
-          field(:new_title){ 'Static Title' }
+          field(:new_title).calculated{ 'Static Title' }
         end
         StaticTitleMorfer
       end

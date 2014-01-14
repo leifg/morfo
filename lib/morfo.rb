@@ -3,29 +3,37 @@ require 'morfo/actions'
 
 module Morfo
   class Base
-    def self.field field_name, definition={}, &blk
-      if blk
-        mapping_actions << Morfo::Actions::TransformationAction.new(definition[:from], field_name, blk)
-      else
-        raise(
-          ArgumentError,
-          "No field to get value from is specified for #{field_name.inspect}"
-        ) unless definition[:from]
-        mapping_actions << Morfo::Actions::MapAction.new(definition[:from], field_name)
-      end
+    def self.field *field_path
+      act = Morfo::Actions::Field.new(field_path, mapping_actions)
+      mapping_actions[field_path] = act
+      act
     end
 
     def self.morf input
-      input.map do |row|
-        mapping_actions.inject({}) do |output, action|
-          deep_merge!(output, action.execute(row))
+      input.map {|row|
+        output_row = {}
+        mapping_actions.each do |field_path, action|
+          deep_merge!(output_row, store_value(action.execute(row), field_path))
         end
-      end
+        output_row
+      }
     end
 
     private
     def self.mapping_actions
-      @actions ||= []
+      @actions ||= {}
+    end
+
+    def self.store_value value, to
+      return {} if value.nil?
+
+      to.reverse.inject({}) do |hash, key|
+        if hash.keys.first.nil?
+          hash.merge!(key => value)
+        else
+          { key => hash }
+        end
+      end
     end
 
     def self.deep_merge! hash, other_hash, &block
