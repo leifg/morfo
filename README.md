@@ -30,10 +30,10 @@ Use the `field` method to specify what fields exist and where they will get thei
 
 ### Simple Mapping
 
-The most basic form is, just define another field from the input hash. The value will just be copied.
+The most basic form is copying the value from another field.
 
     class Title < Morfo::Base
-      field :tv_show_title, from: :title
+      field(:tv_show_title)from(:title)
     end
 
 Afterwards use the `morf` method to morf all hashes in one array to the end result:
@@ -48,12 +48,12 @@ Afterwards use the `morf` method to morf all hashes in one array to the end resu
     #   {tv_show_title: 'Breaking Bad'},
     # ]
 
-If you want to have access to nested values, you'll have to provide an array as the key:
+If you want to have access to nested values, just provide the path to that field comma separated.
 
 
     class Name < Morfo::Base
-      field :first_name, from: [:name, :first]
-      field :last_name, from: [:name, :last]
+      field(:first_name).from(:name, :first)
+      field(:last_name).from(:name, :last)
     end
 
     Name.morf([
@@ -78,10 +78,10 @@ If you want to have access to nested values, you'll have to provide an array as 
 
 ## Transformations
 
-Every field can also take a transformation block, so that the original input can be transformed.
+It's also possible to transform the value in any way ruby lets you transform a value. just provide a block in the `transformed` method.
 
     class AndZombies < Morfo::Base
-      field(:title, from: :title) {|title| "#{title} and Zombies"}
+      field(:title).from(title).transformed {|title| "#{title} and Zombies"}
     end
 
     AndZombies.morf([
@@ -94,11 +94,13 @@ Every field can also take a transformation block, so that the original input can
     #     {title: 'Fifty Shades of Grey and Zombies'},
     # ]
 
-As the second argument, the whole row is passed into the block. So you can even do transformation based on the whole row. Or you can leave out all the arguments and return a static value.
+## Calculations
+
+If the value of your field should be based on multiple fields of the input row, yoy can specify a calculation block via the `calculated` method. As an argument the whole input row is passed in.
 
     class NameConcatenator < Morfo::Base
-      field(:name) {|_, row| "#{row[:first_name]} #{row[:last_name]}"}
-      field(:status) { 'Best Friend' }
+      field(:name).calculated {|row| "#{row[:first_name]} #{row[:last_name]}"}
+      field(:status).calculated {'Best Friend'}
     end
 
     NameConcatenator.morf([
