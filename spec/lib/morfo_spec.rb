@@ -134,7 +134,7 @@ describe Morfo::Base do
       context 'nested destination' do
         subject do
           class WrapperMorfer < Morfo::Base
-            #field(:tv_show, :title).from(:title)
+            field(:tv_show, :title).from(:title)
             field(:tv_show, :channel).from(:channel).transformed {|v| "Channel: #{v}"}
           end
           WrapperMorfer
@@ -144,7 +144,7 @@ describe Morfo::Base do
           expected_output = input.map{|v|
             {
               tv_show: {
-                #title: v[:title],
+                title: v[:title],
                 channel: "Channel: #{v[:channel]}",
               }
             }
