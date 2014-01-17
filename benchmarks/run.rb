@@ -34,6 +34,7 @@ definitions.each do |defintition|
     )
 end
 
+puts "running on: #{RUBY_ENGINE}:"
 Benchmark.bm(20) do |x|
   definitions.each do |defintition|
     x.report(defintition[:label]) do
@@ -43,4 +44,5 @@ Benchmark.bm(20) do |x|
     end
   end
 end
+puts "===="
 
