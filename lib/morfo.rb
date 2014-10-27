@@ -10,13 +10,15 @@ module Morfo
     end
 
     def self.morf input
-      input.map {|row|
-        output_row = {}
-        mapping_actions.each do |field_path, action|
-          deep_merge!(output_row, store_value(action.execute(row), field_path))
-        end
-        output_row
-      }
+      input.map { |row| morf_single(row) }
+    end
+
+    def self.morf_single input
+      output = {}
+      mapping_actions.each do |field_path, action|
+        deep_merge!(output, store_value(action.execute(input), field_path))
+      end
+      output
     end
 
     private
