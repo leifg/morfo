@@ -1,28 +1,28 @@
-require 'morfo'
-require 'benchmark'
-require './benchmarks/data'
+require "morfo"
+require "benchmark"
+require "./benchmarks/data"
 
 iterations = 100
 batch_size = 10000
 
 definitions = [
   {
-    label: 'Simple (strings)',
+    label: "Simple (strings)",
     row: BenchmarkData.row_string_keys,
     morf_class: BenchmarkData::SimpleMorferString
   },
   {
-    label: 'Simple (symbols)',
+    label: "Simple (symbols)",
     row: BenchmarkData.row,
     morf_class: BenchmarkData::SimpleMorferSymbol
   },
   {
-    label: 'Nested (strings)',
+    label: "Nested (strings)",
     row: BenchmarkData.row_nested_string_keys,
     morf_class: BenchmarkData::NestedMorferString
   },
   {
-    label: 'Nested (symbols)',
+    label: "Nested (symbols)",
     row: BenchmarkData.row_nested,
     morf_class: BenchmarkData::NestedMorferSymbol
   },

@@ -12,7 +12,7 @@ This gem is currently only tested on Ruby 2.0 (including 2.0 mode of JRuby and R
 
 Add this line to your application's Gemfile:
 
-    gem 'morfo'
+    gem "morfo"
 
 And then execute:
 
@@ -39,13 +39,13 @@ The most basic form is copying the value from another field.
 Afterwards use the `morf` method to morf all hashes in one array to the end result:
 
     Title.morf([
-              {title: 'The Walking Dead'} ,
-              {title: 'Breaking Bad'},
+              {title: "The Walking Dead"} ,
+              {title: "Breaking Bad"},
             ])
 
     # [
-    #   {tv_show_title: 'The Walking Dead'},
-    #   {tv_show_title: 'Breaking Bad'},
+    #   {tv_show_title: "The Walking Dead"},
+    #   {tv_show_title: "Breaking Bad"},
     # ]
 
 If you want to have access to nested values, just provide the path to that field comma separated.
@@ -59,21 +59,21 @@ If you want to have access to nested values, just provide the path to that field
     Name.morf([
           {
             name: {
-              first: 'Clark',
-              last: 'Kent',
+              first: "Clark",
+              last: "Kent",
             },
           },
           {
             name: {
-              first: 'Bruce',
-              last: 'Wayne',
+              first: "Bruce",
+              last: "Wayne",
             },
           },
         ])
 
     # [
-    #     {first_name: 'Clark',last_name: 'Kent'},
-    #     {first_name: 'Bruce',last_name: 'Wayne'},
+    #     {first_name: "Clark", last_name: "Kent"},
+    #     {first_name: "Bruce", last_name: "Wayne"},
     # ]
 
 ## Transformations
@@ -85,13 +85,13 @@ It's also possible to transform the value in any way ruby lets you transform a v
     end
 
     AndZombies.morf([
-          {title: 'Pride and Prejudice'},
-          {title: 'Fifty Shades of Grey'},
+          {title: "Pride and Prejudice"},
+          {title: "Fifty Shades of Grey"},
         ])
 
     # [
-    #     {title: 'Pride and Prejudice and Zombies'},
-    #     {title: 'Fifty Shades of Grey and Zombies'},
+    #     {title: "Pride and Prejudice and Zombies"},
+    #     {title: "Fifty Shades of Grey and Zombies"},
     # ]
 
 ## Calculations
@@ -100,15 +100,15 @@ If the value of your field should be based on multiple fields of the input row, 
 
     class NameConcatenator < Morfo::Base
       field(:name).calculated {|row| "#{row[:first_name]} #{row[:last_name]}"}
-      field(:status).calculated {'Best Friend'}
+      field(:status).calculated {"Best Friend"}
     end
 
     NameConcatenator.morf([
-          {first_name: 'Robin', last_name: 'Hood'},
-          {first_name: 'Sherlock', last_name: 'Holmes'},
+          {first_name: "Robin", last_name: "Hood"},
+          {first_name: "Sherlock", last_name: "Holmes"},
         ])
 
     # [
     #   {:name=>"Robin Hood", :status=>"Best Friend"},
-    #   {:name=>"Sherlock Holmes", :status=>'Best Friend'}
+    #   {:name=>"Sherlock Holmes", :status=>"Best Friend"}
     # ]
