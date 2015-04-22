@@ -1,5 +1,6 @@
-require 'morfo/version'
-require 'morfo/actions'
+require "morfo/version"
+require "morfo/actions"
+require "morfo/deserializer"
 
 module Morfo
   class Base
