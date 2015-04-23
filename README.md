@@ -76,7 +76,7 @@ If you want to have access to nested values, just provide the path to that field
     #     {first_name: "Bruce", last_name: "Wayne"},
     # ]
 
-## Transformations
+### Transformations
 
 It's also possible to transform the value in any way ruby lets you transform a value. just provide a block in the `transformed` method.
 
@@ -94,7 +94,7 @@ It's also possible to transform the value in any way ruby lets you transform a v
     #     {title: "Fifty Shades of Grey and Zombies"},
     # ]
 
-## Calculations
+### Calculations
 
 If the value of your field should be based on multiple fields of the input row, yoy can specify a calculation block via the `calculated` method. As an argument the whole input row is passed in.
 
