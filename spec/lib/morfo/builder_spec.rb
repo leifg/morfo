@@ -25,7 +25,7 @@ describe Morfo::Builder do
   end
 
   context "on the fly morfers" do
-      subject { described_class.new(definitions).build }
+    subject { described_class.new(definitions).build }
 
     it_behaves_like "a 1 to 1 morfer" do
       let(:definitions) do
