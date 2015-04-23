@@ -154,6 +154,19 @@ shared_examples "a morfer with nested source" do
       end
     end
 
+    context "valid path with calculation" do
+      let(:expected_output) do
+        [
+          { ratings: "IMDB: 8.7, Trakt: 89, Rotten Tommatoes: 93" },
+          { ratings: "IMDB: 9.5, Trakt: 95, Rotten Tommatoes: 100" },
+        ]
+      end
+
+      it "maps nested attributes with transformation" do
+        expect(valid_path_with_calculation.morf(input)).to eq(expected_output)
+      end
+    end
+
     context "invalid path" do
       let(:expected_output) { [{},{}] }
 
@@ -177,6 +190,14 @@ shared_examples "a morfer with nested source" do
 
       it "maps nested attributes with transformation" do
         expect(valid_path_with_transformation.morf_single(single_input)).to eq(expected_output)
+      end
+    end
+
+    context "valid path with calculation" do
+      let(:expected_output) { {ratings: "IMDB: 8.7, Trakt: 89, Rotten Tommatoes: 93"} }
+
+      it "maps nested attributes with transformation" do
+        expect(valid_path_with_calculation.morf_single(single_input)).to eq(expected_output)
       end
     end
 

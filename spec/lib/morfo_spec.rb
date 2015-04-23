@@ -71,6 +71,13 @@ describe Morfo::Base do
       ImdbRatingMorferWithTransformation
     end
 
+    subject(:valid_path_with_calculation) do
+      class ImdbRatingMorferWithCalculation < Morfo::Base
+        field(:ratings).calculated {|r| "IMDB: #{r[:ratings][:imdb]}, Trakt: #{r[:ratings][:trakt]}, Rotten Tommatoes: #{r[:ratings][:rotten_tomatoes]}" }
+      end
+      ImdbRatingMorferWithCalculation
+    end
+
     subject(:invalid_path) do
       class InvalidImdbRatingMorfer < Morfo::Base
         field(:rating).from(:very, :long, :path, :that, :might, :not, :exist)
