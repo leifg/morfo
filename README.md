@@ -42,13 +42,13 @@ Afterwards use the `morf` method to morf all hashes in one array to the end resu
 
 ```ruby
 Title.morf([
-          {title: "The Walking Dead"} ,
-          {title: "Breaking Bad"},
+          { title: "The Walking Dead" },
+          { title: "Breaking Bad" },
         ])
 
 # [
-#   {tv_show_title: "The Walking Dead"},
-#   {tv_show_title: "Breaking Bad"},
+#   { tv_show_title: "The Walking Dead" },
+#   { tv_show_title: "Breaking Bad" },
 # ]
 ```
 
@@ -76,8 +76,8 @@ Name.morf([
     ])
 
 # [
-#     {first_name: "Clark", last_name: "Kent"},
-#     {first_name: "Bruce", last_name: "Wayne"},
+#   { first_name: "Clark", last_name: "Kent" },
+#   { first_name: "Bruce", last_name: "Wayne" },
 # ]
 ```
 
@@ -91,13 +91,13 @@ class AndZombies < Morfo::Base
 end
 
 AndZombies.morf([
-      {title: "Pride and Prejudice"},
-      {title: "Fifty Shades of Grey"},
+      { title: "Pride and Prejudice" },
+      { title: "Fifty Shades of Grey" },
     ])
 
 # [
-#     {title: "Pride and Prejudice and Zombies"},
-#     {title: "Fifty Shades of Grey and Zombies"},
+#   { title: "Pride and Prejudice and Zombies" },
+#   { title: "Fifty Shades of Grey and Zombies" },
 # ]
 ```
 
@@ -112,13 +112,13 @@ class NameConcatenator < Morfo::Base
 end
 
 NameConcatenator.morf([
-      {first_name: "Robin", last_name: "Hood"},
-      {first_name: "Sherlock", last_name: "Holmes"},
+      { first_name: "Robin", last_name: "Hood" },
+      { first_name: "Sherlock", last_name: "Holmes" },
     ])
 
 # [
-#   {:name=>"Robin Hood", :status=>"Best Friend"},
-#   {:name=>"Sherlock Holmes", :status=>"Best Friend"}
+#   { name: "Robin Hood", status: "Best Friend" },
+#   { name: "Sherlock Holmes", status: "Best Friend" }
 # ]
 ```
 
@@ -169,8 +169,8 @@ morfer = Morfo::Builder.new([
 ])
 
 morfer.morf([
-      {title: "Pride and Prejudice"},
-      {title: "Fifty Shades of Grey"},
+      { title: "Pride and Prejudice" },
+      { title: "Fifty Shades of Grey" },
     ])
 
 # [
@@ -190,8 +190,8 @@ morfer = Morfo::Builder.new([
 ])
 
 morfer.morf([
-  {first_name: "Robin", last_name: "Hood"},
-  {first_name: "Sherlock", last_name: "Holmes"},
+  { first_name: "Robin", last_name: "Hood" },
+  { first_name: "Sherlock", last_name: "Holmes" },
 ])
 
 # [
@@ -204,7 +204,7 @@ It's even possible to get access to nested keys, using a dot as separator:
 
 ```ruby
 morfer = Morfo::Builder.new([
-  { field: :first_name, calculated: "%{name.first} %{name.last}" },
+  { field: :name, calculated: "%{name.first} %{name.last}" },
 ])
 
 morfer.morf([
@@ -220,7 +220,7 @@ morfer.morf([
           last: "Wayne",
         },
       },
-    ])
+])
 
 # [
 #   { name: "Clark Kent" },
