@@ -1,5 +1,6 @@
 require "active_support/core_ext/hash"
 require "morfo/version"
+require "morfo/tools"
 require "morfo/actions"
 require "morfo/builder"
 
