@@ -9,20 +9,24 @@ module Morfo
 
       def flatten
         input_hash.inject({}) do |result_hash, (key, value)|
+          inner_hash = false
           if value.is_a?(Hash)
+            inner_hash = true
             value.each do |inner_key, inner_value|
               if inner_value.is_a?(Hash)
-                FlattenHashKeys.new(value).flatten.each do |inner_inner_key, inner_inner_value|
-                  result_hash.merge!("#{key}.#{inner_inner_key}".to_sym => inner_inner_value)
-                end
-              else
-                result_hash.merge!("#{key}.#{inner_key}".to_sym => inner_value)
+                inner_hash = true
               end
+              result_hash.merge!("#{key}.#{inner_key}".to_sym => inner_value)
             end
           else
             result_hash.merge!(key.to_sym => value)
           end
-          result_hash
+
+          if inner_hash
+            FlattenHashKeys.new(result_hash).flatten
+          else
+            result_hash
+          end
         end
       end
     end
