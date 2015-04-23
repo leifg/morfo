@@ -51,5 +51,13 @@ describe Morfo::Builder do
         ]
       end
     end
+
+    it_behaves_like "a 1 to 1 morfer with transformation" do
+      let(:definitions) do
+        [
+          {field: :title, from: :title, transformation: "%{value} and Zombies"}
+        ]
+      end
+    end
   end
 end
