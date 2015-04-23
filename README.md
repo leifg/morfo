@@ -121,3 +121,110 @@ NameConcatenator.morf([
 #   {:name=>"Sherlock Holmes", :status=>"Best Friend"}
 # ]
 ```
+
+### Builder
+
+On top of creating transformers with Ruby classes, it is also possible to build transformers with a hash syntax (which could then be serialized as json and stored somewhere else).
+
+```ruby
+morfer = Morfo::Builder.new([
+  { field: :first_name, from: [:name, :first] },
+  { field: :last_name, from: [:name, :last] },
+])
+
+morfer.morf([
+      {
+        name: {
+          first: "Clark",
+          last: "Kent",
+        },
+      },
+      {
+        name: {
+          first: "Bruce",
+          last: "Wayne",
+        },
+      },
+    ])
+
+# [
+#   { first_name: "Clark", last_name: "Kent" },
+#   { first_name: "Bruce", last_name: "Wayne" },
+# ]
+```
+
+The builder includes all other features such as calculation and transformation
+
+#### Builder Transformations
+
+To transform a value, use the placeholder %{value}
+
+```ruby
+class AndZombies < Morfo::Base
+  field(:title).from(title).transformed {|title| "#{title} and Zombies"}
+end
+
+morfer = Morfo::Builder.new([
+  { field: :title, from: :title, transformed: "%{title} and Zombies" },
+])
+
+morfer.morf([
+      {title: "Pride and Prejudice"},
+      {title: "Fifty Shades of Grey"},
+    ])
+
+# [
+#   { title: "Pride and Prejudice and Zombies" },
+#   { title: "Fifty Shades of Grey and Zombies" },
+# ]
+```
+
+#### Builder Calculations
+
+To get access to the other fields use the [ruby string format syntax](http://ruby-doc.org/core-2.2.0/String.html#method-i-25).
+
+```ruby
+morfer = Morfo::Builder.new([
+  { field: :name, calculated: "%{first_name} %{last_name}" },
+  { field: :status, calculated: "Best Friend" },
+])
+
+morfer.morf([
+  {first_name: "Robin", last_name: "Hood"},
+  {first_name: "Sherlock", last_name: "Holmes"},
+])
+
+# [
+#   { name: "Robin Hood", status: "Best Friend" },
+#   { name: "Sherlock Holmes", status: "Best Friend" }
+# ]
+```
+
+It's even possible to get access to nested keys, using a dot as separator:
+
+```ruby
+morfer = Morfo::Builder.new([
+  { field: :first_name, calculated: "%{name.first} %{name.last}" },
+])
+
+morfer.morf([
+      {
+        name: {
+          first: "Clark",
+          last: "Kent",
+        },
+      },
+      {
+        name: {
+          first: "Bruce",
+          last: "Wayne",
+        },
+      },
+    ])
+
+# [
+#   { name: "Clark Kent" },
+#   { name: "Bruce Wayne" },
+# ]
+```
+
