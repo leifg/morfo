@@ -95,4 +95,14 @@ describe Morfo::Base do
       WrapperMorfer
     end
   end
+
+  it_behaves_like "a morfer with nested destination" do
+    subject do
+      class WrapperMorfer < Morfo::Base
+        field(:tv_show, :title).from(:title)
+        field(:tv_show, :channel).from(:channel).transformed {|v| "Channel: #{v}"}
+      end
+      WrapperMorfer
+    end
+  end
 end
