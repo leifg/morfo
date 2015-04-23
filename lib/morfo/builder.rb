@@ -17,6 +17,9 @@ module Morfo
           if definition[:static]
             f = f.calculated { definition[:static] }
           end
+          if definition[:transformation]
+            f = f.transformed { |r| definition[:transformation] % {value: r} }
+          end
         end
       end
     end
