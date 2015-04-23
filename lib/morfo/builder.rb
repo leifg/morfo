@@ -7,7 +7,7 @@ module Morfo
     def build
       # WTF definitions is not accessable inside class
       # so this javascript technique is necesseray
-      tmp_definitions = definitions
+      tmp_definitions = definitions.map { |h| h.symbolize_keys }
       Class.new(Morfo::Base) do
         tmp_definitions.each do |definition|
           f = field(definition[:field])
