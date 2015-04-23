@@ -101,5 +101,14 @@ describe Morfo::Builder do
         ).build
       end
     end
+
+    it_behaves_like "a morfer with nested destination" do
+      let(:definitions) do
+        [
+          { field: [:tv_show, :title], from: :title },
+          { field: [:tv_show, :channel], from: :channel, transformed: "Channel: %{value}" },
+        ]
+      end
+    end
   end
 end
