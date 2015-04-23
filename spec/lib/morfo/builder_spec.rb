@@ -63,7 +63,7 @@ describe Morfo::Builder do
     it_behaves_like "a 1 to 1 morfer with transformation" do
       let(:definitions) do
         [
-          {field: :title, from: :title, transformed: "%{value} and Zombies"}
+          { field: :title, from: :title, transformed: "%{value} and Zombies" }
         ]
       end
     end
