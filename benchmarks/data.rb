@@ -7,16 +7,16 @@ module BenchmarkData
 
   def row
     {
-      first_name: 'Jazmyn',
-      last_name: 'Willms',
-      gender: 'female',
-      phone_number: '485-675-9228',
-      cell_phone: '1-172-435-9402 x4907',
-      street_name: 'Becker Inlet',
-      street_number: '15a',
-      city: 'Carolynchester',
-      zip: '38189',
-      country: 'USA',
+      first_name: "Jazmyn",
+      last_name: "Willms",
+      gender: "female",
+      phone_number: "485-675-9228",
+      cell_phone: "1-172-435-9402 x4907",
+      street_name: "Becker Inlet",
+      street_number: "15a",
+      city: "Carolynchester",
+      zip: "38189",
+      country: "USA",
     }
   end
 

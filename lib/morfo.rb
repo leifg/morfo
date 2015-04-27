@@ -1,5 +1,8 @@
-require 'morfo/version'
-require 'morfo/actions'
+require "active_support/core_ext/hash"
+require "morfo/version"
+require "morfo/tools"
+require "morfo/actions"
+require "morfo/builder"
 
 module Morfo
   class Base
@@ -16,7 +19,7 @@ module Morfo
     def self.morf_single input
       output = {}
       mapping_actions.each do |field_path, action|
-        deep_merge!(output, store_value(action.execute(input), field_path))
+        output.deep_merge!(store_value(action.execute(input), field_path))
       end
       output
     end
@@ -36,18 +39,6 @@ module Morfo
           { key => hash }
         end
       end
-    end
-
-    def self.deep_merge! hash, other_hash, &block
-      other_hash.each_pair do |k,v|
-        tv = hash[k]
-        if tv.is_a?(Hash) && v.is_a?(Hash)
-          hash[k] = deep_merge!(tv, v, &block)
-        else
-          hash[k] = block && tv ? block.call(k, tv, v) : v
-        end
-      end
-      hash
     end
   end
 end
