@@ -12,14 +12,14 @@ module Morfo
       act
     end
 
-    def self.morf input
-      input.map { |row| morf_single(row) }
+    def self.morf input, options = {}
+      input.map { |row| morf_single(row, options) }
     end
 
-    def self.morf_single input
+    def self.morf_single input, options = {}
       output = {}
       mapping_actions.each do |field_path, action|
-        output.deep_merge!(store_value(action.execute(input), field_path))
+        output.deep_merge!(store_value(action.execute(input), field_path, options))
       end
       output
     end
@@ -29,11 +29,11 @@ module Morfo
       @actions ||= {}
     end
 
-    def self.store_value value, to
-      return {} if value.nil?
+    def self.store_value value, to, options
+      return {} if value.nil? && !options[:include_nil_values]
 
       to.reverse.inject({}) do |hash, key|
-        if hash.keys.first.nil?
+        if hash.empty?
           hash.merge!(key => value)
         else
           { key => hash }

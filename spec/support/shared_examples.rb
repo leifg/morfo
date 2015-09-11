@@ -24,10 +24,20 @@ shared_examples "a 1 to 1 morfer" do
       expect(subject.morf(input)).to eq(expected_output)
     end
 
-    it "leaves out nil values in result" do
-      expected_output = [{},{}]
-      modified_input = input.map{|h| h.reject{|k, v| k == :title}}
-      expect(subject.morf(modified_input)).to eq(expected_output)
+    context "include nils" do
+      it "includes nil values in result" do
+        expected_output = [{tv_show_title: nil},{tv_show_title: nil}]
+        modified_input = input.map{|h| h.reject{|k, v| k == :title}}
+        expect(subject.morf(modified_input, {include_nil_values: true})).to eq(expected_output)
+      end
+    end
+
+    context "disable nils" do
+      it "leaves out nil values in result" do
+        expected_output = [{},{}]
+        modified_input = input.map{|h| h.reject{|k, v| k == :title}}
+        expect(subject.morf(modified_input)).to eq(expected_output)
+      end
     end
   end
 
@@ -40,10 +50,20 @@ shared_examples "a 1 to 1 morfer" do
       expect(subject.morf_single(single_input)).to eq(expected_output)
     end
 
-    it "leaves out nil values in result" do
-      expected_output = {}
-      modified_input = single_input.reject { |k, v| k == :title }
-      expect(subject.morf_single(modified_input)).to eq(expected_output)
+    context "include nils" do
+      it "includes nil values in result" do
+        expected_output = {tv_show_title: nil}
+        modified_input = single_input.reject { |k, v| k == :title }
+        expect(subject.morf_single(modified_input, {include_nil_values: true})).to eq(expected_output)
+      end
+    end
+
+    context "disable nils" do
+      it "leaves out nil values in result" do
+        expected_output = {}
+        modified_input = single_input.reject { |k, v| k == :title }
+        expect(subject.morf_single(modified_input)).to eq(expected_output)
+      end
     end
   end
 end

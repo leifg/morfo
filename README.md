@@ -28,6 +28,21 @@ In order to morf the hashes you have to provide a class that extends `Morf::Base
 
 Use the `field` method to specify what fields exist and where they will get their data from:
 
+### Options
+
+The following options can be passed to the morfer
+
+#### include_nil_values
+
+When passed in, all values that can not be found in the source hash will be set to nil (defaults to `false`). By default those keys will just appear in the result:
+
+```ruby
+Title.morf([
+          { title: "The Walking Dead" },
+          { title: "Breaking Bad" },
+        ], include_nil_values: true)
+```
+
 ### Simple Mapping
 
 The most basic form is copying the value from another field.
