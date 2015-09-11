@@ -34,7 +34,7 @@ The most basic form is copying the value from another field.
 
 ```ruby
 class Title < Morfo::Base
-  field(:tv_show_title)from(:title)
+  field(:tv_show_title).from(:title)
 end
 ```
 
