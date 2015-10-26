@@ -73,7 +73,7 @@ describe Morfo::Base do
 
     subject(:valid_path_with_calculation) do
       class ImdbRatingMorferWithCalculation < Morfo::Base
-        field(:ratings).calculated {|r| "IMDB: #{r[:ratings][:imdb]}, Trakt: #{r[:ratings][:trakt]}, Rotten Tommatoes: #{r[:ratings][:rotten_tomatoes]}" }
+        field(:ratings).calculated {|r| "IMDB: #{r[:ratings] && r[:ratings][:imdb]}, Trakt: #{r[:ratings] && r[:ratings][:trakt]}, Rotten Tommatoes: #{r[:ratings] && r[:ratings][:rotten_tomatoes]}" }
       end
       ImdbRatingMorferWithCalculation
     end
