@@ -175,15 +175,37 @@ shared_examples "a morfer with nested source" do
     end
 
     context "valid path with calculation" do
-      let(:expected_output) do
-        [
-          { ratings: "IMDB: 8.7, Trakt: 89, Rotten Tommatoes: 93" },
-          { ratings: "IMDB: 9.5, Trakt: 95, Rotten Tommatoes: 100" },
-        ]
+      context "all inputs matched" do
+        let(:expected_output) do
+          [
+            { ratings: "IMDB: 8.7, Trakt: 89, Rotten Tommatoes: 93" },
+            { ratings: "IMDB: 9.5, Trakt: 95, Rotten Tommatoes: 100" },
+          ]
+        end
+
+        it "maps nested attributes with transformation" do
+          expect(valid_path_with_calculation.morf(input)).to eq(expected_output)
+        end
       end
 
-      it "maps nested attributes with transformation" do
-        expect(valid_path_with_calculation.morf(input)).to eq(expected_output)
+      context "inputs not matched" do
+        let(:expected_output) do
+          [
+            { ratings: "IMDB: , Trakt: , Rotten Tommatoes: " },
+            { ratings: "IMDB: , Trakt: , Rotten Tommatoes: " },
+          ]
+        end
+
+        let(:modified_input) do
+          input.map do |row|
+            row.delete(:ratings)
+            row
+          end
+        end
+
+        it "maps nested attributes with transformation" do
+          expect(valid_path_with_calculation.morf(modified_input)).to eq(expected_output)
+        end
       end
     end
 
