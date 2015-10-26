@@ -17,7 +17,8 @@ module Morfo
           end
 
           if definition[:calculated]
-            f = f.calculated { |r| definition[:calculated] % Morfo::Tools::FlattenHashKeys.new(r).flatten }
+            base_hash = Morfo::Tools::BaseKeys.new(definition[:calculated]).build
+            f = f.calculated { |r| definition[:calculated] % base_hash.merge(Morfo::Tools::FlattenHashKeys.new(r).flatten) }
           end
 
           if definition[:transformed]

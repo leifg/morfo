@@ -30,5 +30,21 @@ module Morfo
         end
       end
     end
+
+    class BaseKeys
+      attr_reader :input_string
+
+      def initialize(input_string)
+        @input_string = input_string.nil? ? "" : input_string.dup.freeze
+      end
+
+      def build
+        keys = input_string.scan(/\%\{([^\}]+)\}/).flatten
+
+        keys.inject({}) do |hash, key|
+          hash.merge!(key.to_sym => nil)
+        end
+      end
+    end
   end
 end
