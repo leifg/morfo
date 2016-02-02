@@ -180,7 +180,7 @@ class AndZombies < Morfo::Base
 end
 
 morfer = Morfo::Builder.new([
-  { field: :title, from: :title, transformed: "%{title} and Zombies" },
+  { field: :title, from: :title, transformed: "%{value} and Zombies" },
 ])
 
 morfer.morf([
