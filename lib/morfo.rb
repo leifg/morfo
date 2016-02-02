@@ -3,6 +3,7 @@ require "morfo/version"
 require "morfo/tools"
 require "morfo/actions"
 require "morfo/builder"
+require "morfo/errors"
 
 module Morfo
   class Base

@@ -22,7 +22,7 @@ module Morfo
       end
 
       def execute row
-        raise ArgumentError,
+        raise Morfo::NoSourceFieldError,
           "No field to get value from is specified for #{field_path.inspect}"
       end
     end

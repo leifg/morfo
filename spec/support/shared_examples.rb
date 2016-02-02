@@ -3,13 +3,13 @@ shared_examples "an error throwing morfer" do
 
   describe "#morf" do
     it "raises error for nil field" do
-      expect{no_from.morf([{my_field: :something}])}.to raise_error(ArgumentError)
+      expect{no_from.morf([{my_field: :something}])}.to raise_error(Morfo::NoSourceFieldError)
     end
   end
 
   describe "#morf_single" do
     it "raises error for nil field" do
-      expect{no_from.morf_single({my_field: :something})}.to raise_error(ArgumentError)
+      expect{no_from.morf_single({my_field: :something})}.to raise_error(Morfo::NoSourceFieldError)
     end
   end
 end
