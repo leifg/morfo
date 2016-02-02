@@ -1,21 +1,22 @@
 sudo: false
 language: ruby
 cache: bundler
-env: JRUBY_OPTS=--2.0
 rvm:
   - 2.0.0
-  - 2.1.7
-  - 2.2.3
-  - jruby-1.7.22
-  - jruby-9.0.3.0
+  - 2.1.8
+  - 2.2.4
+  - 2.3.0
+  - jruby-9.0.5.0
   - ruby-head
   - jruby-head
-  - rbx-2.2.9
+  - rbx-2.11
+  - rbx-3.14
 matrix:
   fast_finish: true
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: rbx-2.2.3
+    - rvm: rbx-2.11
+    - rvm: rbx-3.14
 script:
-  - bundle exec rake spec
+  - bundle exec rspec
