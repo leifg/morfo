@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "morfo"
   spec.version       = Morfo::VERSION
   spec.authors       = ["Leif Gensert"]
-  spec.email         = ["leif@propertybase.com"]
+  spec.email         = ["leif@leif.io"]
   spec.description   = %q{This gem provides a DSL for converting one hash into another}
   spec.summary       = %q{Inspired by ActiveImporter, this gem generically converts an array of hashes}
   spec.homepage      = ""
