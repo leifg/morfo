@@ -1,5 +1,22 @@
 module Morfo
   module Tools
+    module ExtendedHash
+      extend self
+
+      def symbolize_keys(hash)
+        transform_keys(hash) { |key| key.to_sym rescue key }
+      end
+
+      def transform_keys(hash)
+        return hash.enum_for(:transform_keys) { size } unless block_given?
+        result = {}
+        hash.each_key do |key|
+          result[yield(key)] = hash[key]
+        end
+        result
+      end
+    end
+
     class FlattenHashKeys
       attr_reader :input_hash
 
@@ -10,10 +27,10 @@ module Morfo
       def flatten
         input_hash.inject({}) do |result_hash, (key, value)|
           inner_hash = false
-          if value.is_a?(Hash)
+          if value.is_a?(::Hash)
             inner_hash = true
             value.each do |inner_key, inner_value|
-              if inner_value.is_a?(Hash)
+              if inner_value.is_a?(::Hash)
                 inner_hash = true
               end
               result_hash.merge!("#{key}.#{inner_key}".to_sym => inner_value)
