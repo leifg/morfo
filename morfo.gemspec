@@ -17,12 +17,12 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features|benchmarks)/})
   spec.require_paths = ["lib"]
+  spec.required_ruby_version = '>= 2.0.0'
 
-  spec.add_dependency "rake"
-  spec.add_dependency "json"
-  spec.add_dependency "activesupport", "< 5.1"
-  spec.add_dependency "rubysl" if RUBY_ENGINE == "rbx"
+  spec.add_runtime_dependency "json"
+  spec.add_runtime_dependency "activesupport", "< 5.0"
+  spec.add_runtime_dependency "rubysl" if RUBY_ENGINE == "rbx"
 
+  spec.add_development_dependency "rake"
   spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rspec", ">= 2.14", "< 4.0"
 end
