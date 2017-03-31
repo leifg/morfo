@@ -1,4 +1,4 @@
-require "active_support/core_ext/hash"
+require 'deep_merge/rails_compat'
 require "morfo/version"
 require "morfo/tools"
 require "morfo/actions"
@@ -20,7 +20,7 @@ module Morfo
     def self.morf_single input, options = {}
       output = {}
       mapping_actions.each do |field_path, action|
-        output.deep_merge!(store_value(action.execute(input), field_path, options))
+        output.deeper_merge!(store_value(action.execute(input), field_path, options))
       end
       output
     end
