@@ -1,0 +1,35 @@
+version: 2.0
+
+shared: &shared
+    working_directory: ~/morfo
+    steps:
+      - checkout
+      - run: bundle install --path vendor/bundle
+      - run:
+          name: Run tests
+          command: bundle exec rspec
+
+jobs:
+  "ruby-2.5":  
+    <<: *shared
+    docker:
+      - image: circleci/ruby:2.5
+
+  "ruby-2.6":
+    <<: *shared
+    docker:
+      - image: circleci/ruby:2.6
+
+
+  "ruby-2.7":
+    <<: *shared
+    docker:
+      - image: circleci/ruby:2.7
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "ruby-2.5"
+      - "ruby-2.6"
+      - "ruby-2.7"
